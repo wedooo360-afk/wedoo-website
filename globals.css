@@ -1,0 +1,410 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   WEDOO design tokens
+   --mass is sampled directly from the supplied logo (#0C151A).
+------------------------------------------------------------------- */
+@theme {
+  --color-paper: #f1f0eb;
+  --color-paper-2: #e6e4dd;
+  --color-ink: #111111;
+  --color-mass: #0c151a;
+  --color-muted: #66655f;
+
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+:root {
+  --bg: var(--color-paper);
+  --fg: var(--color-ink);
+  --muted: var(--color-muted);
+  --line: rgb(17 17 17 / 0.16);
+  --tone: var(--color-paper-2);
+
+  --margin: clamp(16px, 3.4vw, 64px);
+  --gutter: clamp(12px, 1.4vw, 24px);
+  --section: clamp(104px, 18vh, 240px);
+  --header-h: 88px;
+
+  /* The logo's cut, as a proportion of any block's width. */
+  --cut-a: 35.6%;
+  --cut-b: 64.4%;
+  --cut-w: 5.3%; /* half width of a cut */
+}
+
+/* Page theme swaps to the logo's ink while the approach zone is in view */
+html[data-theme="ink"] {
+  --bg: var(--color-mass);
+  --fg: var(--color-paper);
+  --muted: #9aa0a0;
+  --line: rgb(241 240 235 / 0.18);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scrollbar-gutter: stable;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  font-stretch: 100%;
+  transition:
+    background-color 0.9s var(--ease-expo),
+    color 0.9s var(--ease-expo);
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-mass);
+  color: var(--color-paper);
+}
+html[data-theme="ink"] ::selection {
+  background: var(--color-paper);
+  color: var(--color-mass);
+}
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Visible, on-brand focus ring */
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  left: var(--margin);
+  top: 12px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--color-mass);
+  color: var(--color-paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  transform: translateY(-160%);
+  transition: transform 0.3s var(--ease-expo);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+@layer components {
+  /* ------------------------------------------------------------------
+     Layout
+  ------------------------------------------------------------------- */
+  .wrap {
+    width: 100%;
+    max-width: calc(1600px + 2 * var(--margin));
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  @media (min-width: 768px) {
+    .grid-12 {
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1024px) {
+    .grid-12 {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+  }
+
+  .section {
+    padding-block: var(--section);
+  }
+
+  /* ------------------------------------------------------------------
+     Typography
+  ------------------------------------------------------------------- */
+  .t-mega,
+  .t-h1,
+  .t-h2 {
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    font-kerning: normal;
+  }
+  .t-mega {
+    font-size: clamp(54px, 14.6vw, 264px);
+    line-height: 0.8;
+    font-stretch: 110%;
+  }
+  .t-h1 {
+    font-size: clamp(64px, 10vw, 180px);
+    line-height: 0.83;
+    font-stretch: 108%;
+  }
+  .t-h2 {
+    font-size: clamp(40px, 5.6vw, 100px);
+    line-height: 0.9;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    font-stretch: 104%;
+  }
+  .t-h3 {
+    font-size: clamp(26px, 2.6vw, 44px);
+    line-height: 1.04;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+  }
+  .t-statement {
+    font-size: clamp(34px, 4.4vw, 80px);
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+  }
+  .t-lead {
+    font-size: clamp(19px, 1.5vw, 25px);
+    line-height: 1.38;
+    letter-spacing: -0.01em;
+  }
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.35;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+  .t-muted {
+    color: var(--muted);
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Split-text masks (created by GSAP SplitText) */
+  /* SplitText masks: give descenders room inside the overflow clip */
+  [data-reveal="text"] .split-line-mask,
+  [data-reveal="text"] .word-mask,
+  [data-reveal="text"] [class$="-mask"] {
+    padding-bottom: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  /* Hide reveal targets only when JS is running and motion is allowed */
+  html.js:not(.reduced) [data-reveal="text"] {
+    visibility: hidden;
+  }
+  html.js:not(.reduced) [data-reveal="image"] {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  /* ------------------------------------------------------------------
+     Links / CTA
+  ------------------------------------------------------------------- */
+  .u-link {
+    position: relative;
+    display: inline-block;
+  }
+  .u-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.55s var(--ease-expo);
+  }
+  .u-link:hover::after,
+  .u-link:focus-visible::after,
+  .u-link[aria-current="page"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    padding-bottom: 6px;
+    position: relative;
+    font-weight: 500;
+  }
+  .cta::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform-origin: left;
+    transition: transform 0.6s var(--ease-expo);
+  }
+  .cta:hover::after {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  .cta .cta-arrow {
+    transition: transform 0.5s var(--ease-expo);
+  }
+  .cta:hover .cta-arrow {
+    transform: translateX(6px);
+  }
+
+  /* ------------------------------------------------------------------
+     The cut: logo-derived geometry
+     Two 90° V-cuts at 35.6% / 64.4% (the top edge of the mark).
+  ------------------------------------------------------------------- */
+  .edge-cut {
+    --d: clamp(22px, 3.2vw, 56px); /* depth of cut */
+    clip-path: polygon(
+      0 0,
+      calc(var(--cut-a) - var(--d)) 0,
+      var(--cut-a) var(--d),
+      calc(var(--cut-a) + var(--d)) 0,
+      calc(var(--cut-b) - var(--d)) 0,
+      var(--cut-b) var(--d),
+      calc(var(--cut-b) + var(--d)) 0,
+      100% 0,
+      100% 100%,
+      0 100%
+    );
+  }
+
+  /* Image frame: hover adds a single cut + the 1:10 taper */
+  .frame {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-paper-2);
+    --n: 0px; /* notch depth */
+    --t: 0%; /* taper inset at bottom */
+    clip-path: polygon(
+      0 0,
+      calc(50% - var(--n)) 0,
+      50% var(--n),
+      calc(50% + var(--n)) 0,
+      100% 0,
+      calc(100% - var(--t)) 100%,
+      var(--t) 100%
+    );
+    transition:
+      clip-path 0.7s var(--ease-expo),
+      --n 0.7s var(--ease-expo),
+      --t 0.7s var(--ease-expo);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .frame.frame-cut,
+    .frame.frame-cut:hover {
+      --n: clamp(10px, 1.4vw, 22px);
+      --t: 1.2%;
+    }
+  }
+  /* Hover zoom uses the independent `scale` property so it composes with GSAP transforms. */
+  .frame img {
+    scale: 1;
+    transition: scale 1.1s var(--ease-expo);
+  }
+  .frame-overscan img {
+    scale: 1.07;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .frame img {
+      scale: 1.03;
+    }
+    .group:hover .frame-overscan img {
+      scale: 1.1;
+    }
+  }
+
+
+}
+
+/* ------------------------------------------------------------------
+   Custom cursor
+------------------------------------------------------------------- */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button {
+  cursor: none;
+}
+html.has-cursor input,
+html.has-cursor textarea {
+  cursor: text;
+}
+
+@layer components {
+  /* ------------------------------------------------------------------
+     Ink zone fallback (no JS: section still reads as ink)
+  ------------------------------------------------------------------- */
+  .ink-zone {
+    background: var(--color-mass);
+    color: var(--color-paper);
+    --muted: #9aa0a0;
+    --line: rgb(241 240 235 / 0.18);
+  }
+  html.js .ink-zone {
+    background: transparent;
+    color: inherit;
+    --muted: inherit;
+    --line: inherit;
+  }
+
+  /* ------------------------------------------------------------------
+     Marquee
+  ------------------------------------------------------------------- */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+
+
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: layout stays, motion goes
+------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@property --n {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --t {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
